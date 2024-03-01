@@ -394,6 +394,8 @@ func getStorageType(backupLocation *velerov1api.BackupStorageLocation) string {
 		return udmrepo.StorageTypeGcs
 	case repoconfig.FSBackend:
 		return udmrepo.StorageTypeFs
+	case repoconfig.WebDAVBackend:
+		return udmrepo.StorageTypeWebDAV
 	default:
 		return ""
 	}
@@ -515,6 +517,10 @@ func getStorageVariables(backupLocation *velerov1api.BackupStorageLocation, repo
 		for k, v := range config {
 			result[k] = v
 		}
+	} else if backendType == repoconfig.WebDAVBackend {
+		result[udmrepo.StoreOptionsWebDAVURL] = config["webDAVUrl"]
+		result[udmrepo.StoreOptionsWebDAVUsername] = config["username"]
+		result[udmrepo.StoreOptionsWebDAVPassword] = config["password"]
 	}
 
 	result[udmrepo.StoreOptionOssBucket] = bucket

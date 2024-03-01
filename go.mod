@@ -33,7 +33,7 @@ require (
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-plugin v1.6.0
 	github.com/joho/godotenv v1.3.0
-	github.com/kopia/kopia v0.14.1
+	github.com/kopia/kopia v0.15.0
 	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.20.1
@@ -160,6 +160,7 @@ require (
 	github.com/prometheus/procfs v0.11.1 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
+	github.com/studio-b12/gowebdav v0.9.0 // indirect
 	github.com/vladimirvivien/gexe v0.1.1 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.opencensus.io v0.24.0 // indirect

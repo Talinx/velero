@@ -23,10 +23,11 @@ import (
 )
 
 const (
-	StorageTypeS3    = "s3"
-	StorageTypeAzure = "azure"
-	StorageTypeFs    = "filesystem"
-	StorageTypeGcs   = "gcs"
+	StorageTypeS3     = "s3"
+	StorageTypeAzure  = "azure"
+	StorageTypeFs     = "filesystem"
+	StorageTypeGcs    = "gcs"
+	StorageTypeWebDAV = "webdav"
 
 	GenOptionMaintainMode  = "mode"
 	GenOptionMaintainFull  = "full"
@@ -46,6 +47,10 @@ const (
 	StoreOptionFsPath = "fspath"
 
 	StoreOptionGcsReadonly = "readonly"
+
+	StoreOptionsWebDAVURL      = "webDAVUrl"
+	StoreOptionsWebDAVUsername = "username"
+	StoreOptionsWebDAVPassword = "password"
 
 	StoreOptionOssBucket = "bucket"
 	StoreOptionOssRegion = "region"

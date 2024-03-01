@@ -30,10 +30,11 @@ import (
 type BackendType string
 
 const (
-	AWSBackend   BackendType = "velero.io/aws"
-	AzureBackend BackendType = "velero.io/azure"
-	GCPBackend   BackendType = "velero.io/gcp"
-	FSBackend    BackendType = "velero.io/fs"
+	AWSBackend    BackendType = "velero.io/aws"
+	AzureBackend  BackendType = "velero.io/azure"
+	GCPBackend    BackendType = "velero.io/gcp"
+	FSBackend     BackendType = "velero.io/fs"
+	WebDAVBackend BackendType = "velero.io/webdav"
 
 	// CredentialsFileKey is the key within a BSL config that is checked to see if
 	// the BSL is using its own credentials, rather than those in the environment
@@ -85,14 +86,21 @@ func getRepoPrefix(location *velerov1api.BackupStorageLocation) (string, error) 
 		return fmt.Sprintf("azure:%s:/%s", bucket, prefix), nil
 	case GCPBackend:
 		return fmt.Sprintf("gs:%s:/%s", bucket, prefix), nil
+	case WebDAVBackend:
+		webDAVURL := location.Spec.Config["webDAVUrl"]
+		username := location.Spec.Config["username"]
+		password := location.Spec.Config["password"]
+		return fmt.Sprintf("davs://%s:%s@%s", username, password, webDAVURL), nil
 	}
 
 	return "", errors.Errorf("invalid backend type %s, provider %s", backendType, location.Spec.Provider)
 }
 
 // GetBackendType returns a backend type that is known by Velero.
-// If the provider doesn't indicate a known backend type, but the endpoint is
-// specified, Velero regards it as a S3 compatible object store and return AWSBackend as the type.
+// If the provider doesn't indicate a known backend type, velero checks if:
+//   - the endpoint is specified => Velero regards it as a S3 compatible object
+//     store and return AWSBackend as the type.
+//   - the WebDAV URL is specified => Velero regards it as WebDAV storage
 func GetBackendType(provider string, config map[string]string) BackendType {
 	if !strings.Contains(provider, "/") {
 		provider = "velero.io/" + provider
@@ -103,13 +111,15 @@ func GetBackendType(provider string, config map[string]string) BackendType {
 		return bt
 	} else if config != nil && config["s3Url"] != "" {
 		return AWSBackend
+	} else if config != nil && config["webDAVUrl"] != "" {
+		return WebDAVBackend
 	} else {
 		return bt
 	}
 }
 
 func IsBackendTypeValid(backendType BackendType) bool {
-	return (backendType == AWSBackend || backendType == AzureBackend || backendType == GCPBackend || backendType == FSBackend)
+	return (backendType == AWSBackend || backendType == AzureBackend || backendType == GCPBackend || backendType == FSBackend || backendType == WebDAVBackend)
 }
 
 // GetRepoIdentifier returns the string to be used as the value of the --repo flag in
